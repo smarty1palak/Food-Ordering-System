@@ -1,0 +1,2 @@
+strategy:
+  selection: lowerCost  # Change to 'higherRating' to switch strategy

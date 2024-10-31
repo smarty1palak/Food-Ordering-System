@@ -19,6 +19,8 @@ public class Restaurant {
     private Long id;
     private String name;
 
+    @ManyToOne
+    @JoinColumn(name = "owner_id", referencedColumnName = "id")
     private User owner;
 
     @Column(length = 1000)

@@ -4,11 +4,13 @@ import com.demo.FoodOrderingService.dto.OrderItemDTO;
 import com.demo.FoodOrderingService.model.Restaurant;
 import com.demo.FoodOrderingService.model.RestaurantMenuItem;
 import io.swagger.v3.oas.annotations.servers.Server;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@Primary
 public class LowerCostStrategy implements RestaurantSelectionStrategy{
     @Override
     public Restaurant selectRestaurant(List<Restaurant> restaurants, List<OrderItemDTO> menuItems){

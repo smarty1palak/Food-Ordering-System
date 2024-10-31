@@ -90,11 +90,6 @@ public class RestaurantServiceImpl implements RestaurantService {
     }
 
     @Override
-    public List<Restaurant> searchRestaurant(String keyword) {
-        return restaurantRepository.findBySearchQuery(keyword);
-    }
-
-    @Override
     public Restaurant updateStatus(Long id) {
 
         Restaurant restaurant = findById(id);

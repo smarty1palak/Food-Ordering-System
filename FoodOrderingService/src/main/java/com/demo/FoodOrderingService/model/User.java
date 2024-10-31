@@ -31,7 +31,7 @@ public class User {
     private UserRole role = UserRole.ROLE_CUSTOMER;
 
     @JsonIgnore
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "customer" ,orphanRemoval = true)
+    @OneToMany(mappedBy = "customer" ,orphanRemoval = true)
     private List<Order> orders;
 
 }

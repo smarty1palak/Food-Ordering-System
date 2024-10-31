@@ -1,12 +1,11 @@
 package com.mahel.FoodOrderingService.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.mahel.FoodOrderingService.enums.OrderStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -24,25 +23,27 @@ public class Order {
     @JoinColumn(name = "customer_id")
     private User customer;
 
-    @JsonIgnore
-    @ManyToOne
-    @JoinColumn(name = "restaurant_id")
-    private Restaurant restaurant;
-
     private Long totalAmount;
 
-    private String orderStatus;
-
-    private Date createdAt;
-
-    @ManyToOne
-    @JoinColumn(name= "address_id")
-    private Address deliveryAddress;
+    @Enumerated(EnumType.STRING)
+    private OrderStatus orderStatus = OrderStatus.PENDING;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "order")
     private List<OrderItem> orderItems;
+//    @JsonIgnore
+//    @ManyToOne
+//    @JoinColumn(name = "restaurant_id")
+//    private Restaurant restaurant;
+//
 
-    private int totalItem;
+//    private Date createdAt;
 
-    private Long totalPrice;
+//    @ManyToOne
+//    @JoinColumn(name= "address_id")
+//    private Address deliveryAddress;
+
+
+//    private int totalItem;
+//
+//    private Long totalPrice;
 }

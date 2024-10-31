@@ -17,17 +17,18 @@ public class OrderItem {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    // quantity fulfilled by this restaurant
     private int quantity;
 
-    private Long totalPrice;
-
-    private List<String> ingredients;
-
     @ManyToOne
-    @JoinColumn(name ="food_id")
-    private Food food;
+    @JoinColumn(name = "restaurant_menu_food_id", nullable = false)
+    private RestaurantMenuFood restaurantMenuFood;
 
     @ManyToOne
     @JoinColumn(name= "order_id")
     private Order order;
+
+//    private Long totalPrice;
+//
+//    private List<String> ingredients;
 }

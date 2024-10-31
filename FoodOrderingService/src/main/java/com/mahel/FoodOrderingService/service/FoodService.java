@@ -1,7 +1,6 @@
 package com.mahel.FoodOrderingService.service;
 
 import com.mahel.FoodOrderingService.dto.FoodDTO;
-import com.mahel.FoodOrderingService.model.Category;
 import com.mahel.FoodOrderingService.model.Food;
 import com.mahel.FoodOrderingService.model.Restaurant;
 

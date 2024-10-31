@@ -1,9 +1,7 @@
 package com.mahel.FoodOrderingService.controller;
 
-import com.mahel.FoodOrderingService.dto.RestaurantDTO;
 import com.mahel.FoodOrderingService.dto.response.ResponseDTO;
 import com.mahel.FoodOrderingService.model.Restaurant;
-import com.mahel.FoodOrderingService.model.User;
 import com.mahel.FoodOrderingService.service.RestaurantService;
 import com.mahel.FoodOrderingService.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,20 +63,35 @@ public class RestaurantController {
         return new ResponseEntity<>(response, response.getHttpStatus());
     }
 
-    @PutMapping("/{id}/add-favorites")
-    public ResponseEntity<ResponseDTO<RestaurantDTO>> addToFavorites(
-            @PathVariable Long id,
-            @RequestHeader("Authorization") String jwt
-    ) throws Exception {
-        ResponseDTO<RestaurantDTO> response = new ResponseDTO<>();
-        User user = userService.userByToken(jwt);
-        RestaurantDTO restaurant = restaurantService.addToFavorites(id, user);
-
-        response.setPayload(restaurant);
-        response.setMessage("Successful");
-        response.setHttpStatus(HttpStatus.OK);
-        response.setCode("200");
-
-        return new ResponseEntity<>(response, response.getHttpStatus());
+    @PostMapping
+    public ResponseEntity<ResponseDTO<Restaurant>> registerRestaurant(@RequestBody Restaurant restaurant) {
+        ResponseDTO<Restaurant> response = new ResponseDTO<>();
+        Restaurant newRestaurant = restaurantService.createRestaurant(restaurant,)
+        return restaurantRepository.save(restaurant);
     }
+
+    @PostMapping("/{id}/menu-items")
+    public Restaurant addMenuItem(@PathVariable Long id, @RequestBody MenuItem menuItem) {
+        Restaurant restaurant = restaurantRepository.findById(id).orElseThrow(() -> new RuntimeException("Restaurant not found"));
+        menuItem.setRestaurant(restaurant);
+        restaurant.getMenuItems().add(menuItem);
+        return restaurantRepository.save(restaurant);
+    }
+
+//    @PutMapping("/{id}/add-favorites")
+//    public ResponseEntity<ResponseDTO<RestaurantDTO>> addToFavorites(
+//            @PathVariable Long id,
+//            @RequestHeader("Authorization") String jwt
+//    ) throws Exception {
+//        ResponseDTO<RestaurantDTO> response = new ResponseDTO<>();
+//        User user = userService.userByToken(jwt);
+//        RestaurantDTO restaurant = restaurantService.addToFavorites(id, user);
+//
+//        response.setPayload(restaurant);
+//        response.setMessage("Successful");
+//        response.setHttpStatus(HttpStatus.OK);
+//        response.setCode("200");
+//
+//        return new ResponseEntity<>(response, response.getHttpStatus());
+//    }
 }

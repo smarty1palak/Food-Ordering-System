@@ -2,10 +2,8 @@ package com.mahel.FoodOrderingService.service.impl;
 
 import com.mahel.FoodOrderingService.dto.RestaurantDTO;
 import com.mahel.FoodOrderingService.exception.BadRequestException;
-import com.mahel.FoodOrderingService.model.Address;
 import com.mahel.FoodOrderingService.model.Restaurant;
 import com.mahel.FoodOrderingService.model.User;
-import com.mahel.FoodOrderingService.repository.AddressRepository;
 import com.mahel.FoodOrderingService.repository.RestaurantRepository;
 import com.mahel.FoodOrderingService.repository.UserRepository;
 import com.mahel.FoodOrderingService.service.RestaurantService;

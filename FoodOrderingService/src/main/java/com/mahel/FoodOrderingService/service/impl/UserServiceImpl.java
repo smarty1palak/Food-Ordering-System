@@ -1,9 +1,7 @@
 package com.mahel.FoodOrderingService.service.impl;
 
 import com.mahel.FoodOrderingService.config.JwtProvider;
-import com.mahel.FoodOrderingService.repository.CartRepository;
 import com.mahel.FoodOrderingService.dto.UserDTO;
-import com.mahel.FoodOrderingService.model.Cart;
 import com.mahel.FoodOrderingService.model.User;
 import com.mahel.FoodOrderingService.repository.UserRepository;
 import com.mahel.FoodOrderingService.service.UserService;

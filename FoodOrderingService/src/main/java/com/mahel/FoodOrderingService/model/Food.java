@@ -18,40 +18,39 @@ public class Food {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "food")
-    private List<OrderItem> orderItems;
-
     private String name;
 
     private String description;
 
-    private Long price;
+    @OneToMany(mappedBy = "food")
+    private List<RestaurantMenuFood> restaurantMenuFoods;
 
-    @ManyToOne
-    @JoinColumn(name = "category_id")
-    private Category foodCategory;
+//    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "food")
+//    private List<OrderItem> orderItems;
 
-    @Column(length = 1000)
-    @ElementCollection
-    private List<String> images;
+//    @ManyToOne
+//    @JoinColumn(name = "category_id")
+//    private Category foodCategory;
 
-    private boolean available;
+//    @Column(length = 1000)
+//    @ElementCollection
+//    private List<String> images;
 
-    @ManyToOne
-    @JoinColumn(name = "restaurant_id")
-    private Restaurant restaurant;
+//    private boolean available;
 
-    private boolean isVegetarian;
 
-    private boolean isSeasonal;
 
-    @ManyToMany
-    @JoinTable(
-            name = "food_ingredient",
-            joinColumns = @JoinColumn(name = "food_id"),
-            inverseJoinColumns = @JoinColumn(name = "ingredients_item_id")
-    )
-    private List<IngredientsItem> ingredientsItems;
+//    private boolean isVegetarian;
+//
+//    private boolean isSeasonal;
 
-    private Date creationDate;
+//    @ManyToMany
+//    @JoinTable(
+//            name = "food_ingredient",
+//            joinColumns = @JoinColumn(name = "food_id"),
+//            inverseJoinColumns = @JoinColumn(name = "ingredients_item_id")
+//    )
+//    private List<IngredientsItem> ingredientsItems;
+//
+//    private Date creationDate;
 }

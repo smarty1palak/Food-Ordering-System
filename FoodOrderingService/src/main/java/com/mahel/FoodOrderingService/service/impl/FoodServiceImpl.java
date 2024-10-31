@@ -2,7 +2,6 @@ package com.mahel.FoodOrderingService.service.impl;
 
 import com.mahel.FoodOrderingService.dto.FoodDTO;
 import com.mahel.FoodOrderingService.exception.BadRequestException;
-import com.mahel.FoodOrderingService.model.Category;
 import com.mahel.FoodOrderingService.model.Food;
 import com.mahel.FoodOrderingService.model.Restaurant;
 import com.mahel.FoodOrderingService.repository.FoodRepository;

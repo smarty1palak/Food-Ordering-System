@@ -4,7 +4,6 @@ import com.mahel.FoodOrderingService.dto.OrderDTO;
 import com.mahel.FoodOrderingService.exception.BadRequestException;
 import com.mahel.FoodOrderingService.model.*;
 import com.mahel.FoodOrderingService.repository.*;
-import com.mahel.FoodOrderingService.service.CartService;
 import com.mahel.FoodOrderingService.service.OrderService;
 import com.mahel.FoodOrderingService.service.RestaurantService;
 import org.springframework.beans.factory.annotation.Autowired;

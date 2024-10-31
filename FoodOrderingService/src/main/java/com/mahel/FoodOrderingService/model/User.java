@@ -35,9 +35,4 @@ public class User {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "customer" ,orphanRemoval = true)
     private List<Order> orders;
 
-    @ElementCollection
-    private List<RestaurantDTO> favorites;
-
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "user")
-    private List<Address> addresses;
 }

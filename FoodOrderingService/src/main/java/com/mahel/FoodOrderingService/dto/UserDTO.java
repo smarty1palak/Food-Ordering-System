@@ -1,7 +1,6 @@
 package com.mahel.FoodOrderingService.dto;
 
 import com.mahel.FoodOrderingService.enums.UserRole;
-import com.mahel.FoodOrderingService.model.Address;
 import com.mahel.FoodOrderingService.model.Order;
 import com.mahel.FoodOrderingService.model.Restaurant;
 import lombok.AllArgsConstructor;

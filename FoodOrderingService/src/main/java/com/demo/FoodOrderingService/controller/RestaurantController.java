@@ -63,12 +63,12 @@ public class RestaurantController {
         return new ResponseEntity<>(response, response.getHttpStatus());
     }
 
-//    @PostMapping
-//    public ResponseEntity<ResponseDTO<Restaurant>> registerRestaurant(@RequestBody Restaurant restaurant) {
-//        ResponseDTO<Restaurant> response = new ResponseDTO<>();
-//        Restaurant newRestaurant = restaurantService.createRestaurant(restaurant,)
-//        return restaurantRepository.save(restaurant);
-//    }
+    @PostMapping
+    public ResponseEntity<ResponseDTO<Restaurant>> registerRestaurant(@RequestBody Restaurant restaurant) {
+        ResponseDTO<Restaurant> response = new ResponseDTO<>();
+        Restaurant newRestaurant = restaurantService.createRestaurant(restaurant,)
+        return restaurantRepository.save(restaurant);
+    }
 //
 //    @PostMapping("/{id}/menu-items")
 //    public Restaurant addMenuItem(@PathVariable Long id, @RequestBody MenuItem menuItem) {

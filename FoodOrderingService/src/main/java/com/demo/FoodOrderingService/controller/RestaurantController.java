@@ -1,7 +1,10 @@
 package com.demo.FoodOrderingService.controller;
 
+import com.demo.FoodOrderingService.dto.RestaurantDTO;
 import com.demo.FoodOrderingService.dto.response.ResponseDTO;
 import com.demo.FoodOrderingService.model.Restaurant;
+import com.demo.FoodOrderingService.repository.RestaurantRepository;
+import com.demo.FoodOrderingService.repository.UserRepository;
 import com.demo.FoodOrderingService.service.RestaurantService;
 import com.demo.FoodOrderingService.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +23,9 @@ public class RestaurantController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private RestaurantRepository restaurantRepository;
 
 //    @GetMapping("/search")
 //    public ResponseEntity<ResponseDTO<List<Restaurant>>> searchRestaurant(@RequestParam String keyword) throws Exception {
@@ -63,11 +69,16 @@ public class RestaurantController {
         return new ResponseEntity<>(response, response.getHttpStatus());
     }
 
-    @PostMapping
-    public ResponseEntity<ResponseDTO<Restaurant>> registerRestaurant(@RequestBody Restaurant restaurant) {
-        ResponseDTO<Restaurant> response = new ResponseDTO<>();
-        Restaurant newRestaurant = restaurantService.createRestaurant(restaurant,)
-        return restaurantRepository.save(restaurant);
+    @PostMapping("/register")
+    public ResponseEntity<ResponseDTO<RestaurantDTO>> registerRestaurant(@RequestBody RestaurantDTO restaurant) {
+        ResponseDTO<RestaurantDTO> response = new ResponseDTO<>();
+        Restaurant newRestaurant = restaurantService.createRestaurant(restaurant);
+        restaurantRepository.save(newRestaurant);
+        response.setPayload(restaurant);
+        response.setMessage("Restaurant created successfully");
+        response.setHttpStatus(HttpStatus.CREATED);
+        response.setCode("201");
+        return new ResponseEntity<>(response, response.getHttpStatus());
     }
 //
 //    @PostMapping("/{id}/menu-items")

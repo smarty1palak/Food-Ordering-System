@@ -9,6 +9,7 @@ import com.demo.FoodOrderingService.repository.RestaurantMenuItemRepository;
 import com.demo.FoodOrderingService.repository.RestaurantRepository;
 import com.demo.FoodOrderingService.repository.UserRepository;
 import com.demo.FoodOrderingService.service.RestaurantService;
+import com.demo.FoodOrderingService.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,7 +30,7 @@ public class RestaurantServiceImpl implements RestaurantService {
     private RestaurantMenuItemRepository restaurantMenuItemRepository;
 
     @Override
-    public Restaurant createRestaurant(Restaurant restaurant, User user) {
+    public Restaurant createRestaurant(RestaurantDTO restaurant) {
 
         if (restaurant.getName() == null) {
             throw new BadRequestException("Restaurant Name Required");
@@ -38,13 +39,15 @@ public class RestaurantServiceImpl implements RestaurantService {
         if (restaurant.getDescription() == null) {
             throw new BadRequestException("Restaurant Description Required");
         }
-
+        User owner = userRepository.findByEmail(restaurant.getOwnerEmail());
         Restaurant restaurant1 = new Restaurant();
 
         restaurant1.setName(restaurant.getName());
         restaurant1.setDescription(restaurant.getDescription());
-        restaurant1.setFoods(restaurant.getFoods());
-        restaurant1.setOwner(user);
+        restaurant1.setRating(restaurant.getRating());
+        restaurant1.setProcessingCapacity(restaurant.getProcessingCapacity());
+        restaurant1.setProcessingTimePerItem(restaurant.getProcessingTimePerItem());
+        restaurant1.setOwner(owner);
 
         return restaurantRepository.save(restaurant1);
     }
@@ -107,26 +110,6 @@ public class RestaurantServiceImpl implements RestaurantService {
         }
 
         return restaurant.get();
-    }
-
-    @Override
-    public RestaurantDTO addToFavorites(Long restaurantId, User user) {
-
-        Optional<Restaurant> optionalRestaurant = restaurantRepository.findById(restaurantId);
-        if (!optionalRestaurant.isPresent()) {
-            throw new BadRequestException("Restaurant not found with id " + restaurantId);
-        }
-
-        Restaurant restaurant = optionalRestaurant.get();
-
-        RestaurantDTO restaurantDTO = new RestaurantDTO();
-        restaurantDTO.setDescription(restaurant.getDescription());
-        restaurantDTO.setTitle(restaurant.getName());
-        restaurantDTO.setId(restaurantId);
-
-        userRepository.save(user);
-
-        return restaurantDTO;
     }
 
     @Override

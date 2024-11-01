@@ -1,5 +1,6 @@
 package com.demo.FoodOrderingService.controller;
 
+import com.demo.FoodOrderingService.dto.RestaurantDTO;
 import com.demo.FoodOrderingService.dto.response.ResponseDTO;
 import com.demo.FoodOrderingService.model.Restaurant;
 import com.demo.FoodOrderingService.model.User;
@@ -24,14 +25,14 @@ public class AdminRestaurantController {
 
     @PostMapping()
     public ResponseEntity<ResponseDTO<Restaurant>> createRestaurant(
-            @RequestBody Restaurant res,
+            @RequestBody RestaurantDTO res,
             @RequestHeader("Authorization") String jwt
     ) throws Exception {
 
         ResponseDTO<Restaurant> response = new ResponseDTO<>();
 
         User user = userService.userByToken(jwt);
-        Restaurant restaurant = restaurantService.createRestaurant(res, user);
+        Restaurant restaurant = restaurantService.createRestaurant(res);
 
         response.setPayload(restaurant);
         response.setMessage("Restaurant Created");

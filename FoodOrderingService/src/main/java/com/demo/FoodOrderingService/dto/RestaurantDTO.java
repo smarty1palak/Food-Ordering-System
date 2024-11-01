@@ -1,5 +1,6 @@
 package com.demo.FoodOrderingService.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import lombok.AllArgsConstructor;
@@ -14,15 +15,23 @@ import java.util.List;
 @NoArgsConstructor
 public class RestaurantDTO {
 
-    private String title;
-
-    @Column(length = 1000)
-    private List<String> images;
-
-    @Column(length = 1000)
-    private String description;
-
+    @Schema(accessMode = Schema.AccessMode.READ_ONLY)
     private Long id;
 
-    private boolean open = false;
+    private String name;
+
+    private String ownerFullName;
+
+    private String ownerEmail;
+
+    private Double rating;
+
+    private Integer processingCapacity;
+
+    private Integer currLoad;
+
+    private long processingTimePerItem;
+
+    private String description;
+
 }

@@ -88,6 +88,12 @@ public class RestaurantServiceImpl implements RestaurantService {
     }
 
     @Override
+    public Restaurant findByNameAndEmail(String restaurantName, String ownerEmail){
+        User user = userRepository.findByEmail(ownerEmail);
+        return restaurantRepository.findByNameAndOwnerId(restaurantName, user.getId());
+    }
+
+    @Override
     public List<Restaurant> getAllRestaurant() {
         return restaurantRepository.findAll();
     }

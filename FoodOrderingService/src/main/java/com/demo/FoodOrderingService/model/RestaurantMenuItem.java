@@ -21,9 +21,4 @@ public class RestaurantMenuItem {
     private String itemName;
     private double price;
     private int quantity;
-
-    public void reduceQuantity(int amount) {
-        this.quantity -= amount;
-    }
-
 }

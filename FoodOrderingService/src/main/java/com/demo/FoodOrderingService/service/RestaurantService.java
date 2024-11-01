@@ -21,4 +21,6 @@ public interface RestaurantService {
     public Restaurant findById(Long id);
 
     public List<Restaurant> findRestaurantByOwnerId(Long id);
+
+    public Restaurant findByNameAndEmail(String restaurantName, String ownerEmail);
 }

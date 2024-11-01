@@ -12,7 +12,7 @@ import com.demo.FoodOrderingService.repository.OrderRepository;
 import com.demo.FoodOrderingService.repository.UserRepository;
 import com.demo.FoodOrderingService.model.*;
 import com.demo.FoodOrderingService.service.OrderService;
-import com.demo.FoodOrderingService.service.RestaurantMenuService;
+import com.demo.FoodOrderingService.service.RestaurantMenuItemService;
 import com.demo.FoodOrderingService.service.RestaurantService;
 import com.demo.FoodOrderingService.service.strategy.RestaurantSelectionStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +42,7 @@ public class OrderServiceImpl implements OrderService {
     private RestaurantService restaurantService;
 
     @Autowired
-    private RestaurantMenuService restaurantMenuService;
+    private RestaurantMenuItemService restaurantMenuService;
 
     @Autowired
     private RestaurantSelectionStrategy selectionStrategy;

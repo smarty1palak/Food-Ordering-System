@@ -1,22 +1,15 @@
 package com.demo.FoodOrderingService.controller;
 
-import com.demo.FoodOrderingService.dto.RestaurantDTO;
 import com.demo.FoodOrderingService.dto.RestaurantMenuItemDTO;
 import com.demo.FoodOrderingService.dto.response.ResponseDTO;
-import com.demo.FoodOrderingService.model.Restaurant;
 import com.demo.FoodOrderingService.model.RestaurantMenuItem;
 import com.demo.FoodOrderingService.repository.RestaurantMenuItemRepository;
-import com.demo.FoodOrderingService.repository.RestaurantRepository;
 import com.demo.FoodOrderingService.service.RestaurantMenuItemService;
-import com.demo.FoodOrderingService.service.RestaurantService;
 import com.demo.FoodOrderingService.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("api/v1/menu-items")
@@ -31,6 +24,20 @@ public class RestaurantMenuItemController {
     @Autowired
     private RestaurantMenuItemRepository restaurantMenuItemRepository;
 
+    @GetMapping("/{id}")
+    public ResponseEntity<ResponseDTO<RestaurantMenuItem>> findRestaurantMenuItemById(@PathVariable Long id) {
+
+        ResponseDTO<RestaurantMenuItem> response = new ResponseDTO<>();
+        RestaurantMenuItem restaurantMenuItem = restaurantMenuItemService.findById(id);
+
+        response.setPayload(restaurantMenuItem);
+        response.setMessage("Successful");
+        response.setHttpStatus(HttpStatus.OK);
+        response.setCode("200");
+
+        return new ResponseEntity<>(response, response.getHttpStatus());
+    }
+
     @PostMapping("/register-item")
     public ResponseEntity<ResponseDTO<RestaurantMenuItemDTO>> registerMenuItems(@RequestBody RestaurantMenuItemDTO restaurantMenuItem) {
         ResponseDTO<RestaurantMenuItemDTO> response = new ResponseDTO<>();
@@ -42,4 +49,19 @@ public class RestaurantMenuItemController {
         response.setCode("201");
         return new ResponseEntity<>(response, response.getHttpStatus());
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ResponseDTO<Boolean>> deleteRestaurantMenuItemById(@RequestParam Long id) throws Exception {
+
+        ResponseDTO<Boolean> response = new ResponseDTO<>();
+        boolean isDelete = restaurantMenuItemService.deleteRestaurantMenuItem(id);
+
+        response.setPayload(isDelete);
+        response.setMessage("Deleted Successfully");
+        response.setHttpStatus(HttpStatus.OK);
+        response.setCode("200");
+
+        return new ResponseEntity<>(response, response.getHttpStatus());
+    }
+
 }

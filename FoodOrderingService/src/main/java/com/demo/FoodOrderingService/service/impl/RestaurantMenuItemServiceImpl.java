@@ -61,4 +61,27 @@ public class RestaurantMenuItemServiceImpl implements RestaurantMenuItemService 
     public Double getPriceByNameAndId(Long restaurantId, String name){
         return restaurantMenuItemRepository.findPriceByNameAndId(name, restaurantId);
     }
+
+    @Override
+    public RestaurantMenuItem findById(Long id) {
+
+        Optional<RestaurantMenuItem> restaurantMenuItem = restaurantMenuItemRepository.findById(id);
+
+        if (restaurantMenuItem.isEmpty()) {
+            throw new BadRequestException("Can not Find Restaurant Menu Item With Id " + id);
+        }
+
+        return restaurantMenuItem.get();
+    }
+
+    @Override
+    public boolean deleteRestaurantMenuItem(Long id) throws Exception {
+
+        RestaurantMenuItem menuItem = findById(id);
+        menuItem.setRestaurant(null);
+
+        restaurantMenuItemRepository.save(menuItem);
+
+        return true;
+    }
 }

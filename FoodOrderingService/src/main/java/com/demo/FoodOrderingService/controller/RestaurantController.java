@@ -27,20 +27,6 @@ public class RestaurantController {
     @Autowired
     private RestaurantRepository restaurantRepository;
 
-//    @GetMapping("/search")
-//    public ResponseEntity<ResponseDTO<List<Restaurant>>> searchRestaurant(@RequestParam String keyword) throws Exception {
-//
-//        ResponseDTO<List<Restaurant>> response = new ResponseDTO<>();
-//        List<Restaurant> restaurants = restaurantService.searchRestaurant(keyword);
-//
-//        response.setPayload(restaurants);
-//        response.setMessage("Successful");
-//        response.setHttpStatus(HttpStatus.OK);
-//        response.setCode("200");
-//
-//        return new ResponseEntity<>(response, response.getHttpStatus());
-//    }
-
     @GetMapping()
     public ResponseEntity<ResponseDTO<List<Restaurant>>> getAllRestaurant() {
 
@@ -78,6 +64,20 @@ public class RestaurantController {
         response.setMessage("Restaurant created successfully");
         response.setHttpStatus(HttpStatus.CREATED);
         response.setCode("201");
+        return new ResponseEntity<>(response, response.getHttpStatus());
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ResponseDTO<Boolean>> deleteRestaurantById(@RequestParam Long id) throws Exception {
+
+        ResponseDTO<Boolean> response = new ResponseDTO<>();
+        boolean isDelete = restaurantService.deleteRestaurant(id);
+
+        response.setPayload(isDelete);
+        response.setMessage("Deleted Successfully");
+        response.setHttpStatus(HttpStatus.OK);
+        response.setCode("200");
+
         return new ResponseEntity<>(response, response.getHttpStatus());
     }
 //

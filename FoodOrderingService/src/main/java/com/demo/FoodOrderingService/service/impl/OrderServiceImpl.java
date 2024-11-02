@@ -9,21 +9,25 @@ import com.demo.FoodOrderingService.model.Restaurant;
 import com.demo.FoodOrderingService.model.User;
 import com.demo.FoodOrderingService.repository.OrderItemRepository;
 import com.demo.FoodOrderingService.repository.OrderRepository;
+import com.demo.FoodOrderingService.repository.RestaurantMenuItemRepository;
 import com.demo.FoodOrderingService.repository.UserRepository;
 import com.demo.FoodOrderingService.model.*;
 import com.demo.FoodOrderingService.service.OrderService;
 import com.demo.FoodOrderingService.service.RestaurantMenuItemService;
 import com.demo.FoodOrderingService.service.RestaurantService;
 import com.demo.FoodOrderingService.service.strategy.RestaurantSelectionStrategy;
+import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.Console;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 @Service
@@ -42,10 +46,13 @@ public class OrderServiceImpl implements OrderService {
     private RestaurantService restaurantService;
 
     @Autowired
-    private RestaurantMenuItemService restaurantMenuService;
+    private RestaurantMenuItemService restaurantMenuItemService;
 
     @Autowired
     private RestaurantSelectionStrategy selectionStrategy;
+
+    @Autowired
+    private RestaurantMenuItemRepository restaurantMenuItemRepository;
 
 
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(10);
@@ -68,7 +75,9 @@ public class OrderServiceImpl implements OrderService {
         int totalQuantity = 0;
         if (selectedRestaurant != null) {
             for(OrderItemDTO item : orderDTO.getItems()){
-                totalCost += restaurantMenuService.getPriceByNameAndId(selectedRestaurant.getId(), item.getItemName());
+                double itemPrice = restaurantMenuItemService.getPriceByNameAndId(selectedRestaurant.getId(), item.getItemName());
+                RestaurantMenuItem restaurantMenuItem1 = restaurantMenuItemService.getMenuItemByNameAndId(selectedRestaurant.getId(), item.getItemName());
+                totalCost += itemPrice;
                 totalQuantity += item.getQuantity();
             }
             selectedRestaurant.incrementProcessingLoad(totalQuantity);
@@ -84,12 +93,25 @@ public class OrderServiceImpl implements OrderService {
         order.setOrderStatus(OrderStatus.PROCESSING);
 
         orderRepository.save(order);
+
+        for(OrderItemDTO item : orderDTO.getItems()){
+            double itemPrice = restaurantMenuItemService.getPriceByNameAndId(selectedRestaurant.getId(), item.getItemName());
+            RestaurantMenuItem restaurantMenuItem1 = restaurantMenuItemService.getMenuItemByNameAndId(selectedRestaurant.getId(), item.getItemName());
+            restaurantMenuItem1.setQuantity(restaurantMenuItem1.getQuantity()-item.getQuantity());
+            restaurantMenuItemRepository.save(restaurantMenuItem1);
+            OrderItem orderItem1 = new OrderItem();
+            orderItem1.setTotalPrice(itemPrice*item.getQuantity());
+            orderItem1.setOrderQuantity(item.getQuantity());
+            orderItem1.setOrder(order);
+            orderItem1.setRestaurantMenuItem(restaurantMenuItem1);
+            orderItemRepository.save(orderItem1);
+        }
         return order;
     }
 
     private boolean canFulfillOrder(Restaurant restaurant, List<OrderItemDTO> items){
         for (OrderItemDTO itemRequest : items) {
-            RestaurantMenuItem menuItem = restaurantMenuService.getMenuItemByNameAndId(restaurant.getId(),itemRequest.getItemName());
+            RestaurantMenuItem menuItem = restaurantMenuItemService.getMenuItemByNameAndId(restaurant.getId(),itemRequest.getItemName());
             if (menuItem == null || menuItem.getQuantity() < itemRequest.getQuantity()) {
                 return false;
             }

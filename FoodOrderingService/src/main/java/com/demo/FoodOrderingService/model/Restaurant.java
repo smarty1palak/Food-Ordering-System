@@ -30,7 +30,7 @@ public class Restaurant {
 
     private Integer processingCapacity;
 
-    private Integer currLoad;
+    private Integer currLoad = 0;
 
     private long processingTimePerItem;
 

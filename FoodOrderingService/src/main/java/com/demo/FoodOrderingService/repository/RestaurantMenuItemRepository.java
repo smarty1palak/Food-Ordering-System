@@ -12,6 +12,6 @@ public interface RestaurantMenuItemRepository extends JpaRepository<RestaurantMe
     @Query(value = "SELECT * from restaurant_menu_item r where r.restaurant_id = :id and r.item_name = :name", nativeQuery = true)
     Optional<RestaurantMenuItem> findByName(@Param("id") Long restaurantId, @Param("name") String name);
 
-    @Query(value = "SELECT price from RestaurantMenuItem r where r.restaurant_id = :id and r.item_name = :name", nativeQuery = true)
+    @Query(value = "SELECT price from restaurant_menu_item r where r.restaurant_id = :id and r.item_name = :name", nativeQuery = true)
     Double findPriceByNameAndId(@Param("name") String name, @Param("id") Long restaurantId);
 }

@@ -15,7 +15,7 @@ public class OrderItem {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    private int quantity;
+    private int orderQuantity;
 
     @ManyToOne
     @JoinColumn(name = "restaurant_menu_food_id", nullable = false)

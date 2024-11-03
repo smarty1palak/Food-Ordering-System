@@ -26,7 +26,4 @@ public class OrderItem {
     private Order order;
 
     private Double totalPrice;
-
-//
-//    private List<String> ingredients;
 }

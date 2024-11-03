@@ -3,13 +3,11 @@ package com.demo.FoodOrderingService.service.impl;
 import com.demo.FoodOrderingService.dto.RestaurantDTO;
 import com.demo.FoodOrderingService.exception.BadRequestException;
 import com.demo.FoodOrderingService.model.Restaurant;
-import com.demo.FoodOrderingService.model.RestaurantMenuItem;
 import com.demo.FoodOrderingService.model.User;
 import com.demo.FoodOrderingService.repository.RestaurantMenuItemRepository;
 import com.demo.FoodOrderingService.repository.RestaurantRepository;
 import com.demo.FoodOrderingService.repository.UserRepository;
 import com.demo.FoodOrderingService.service.RestaurantService;
-import com.demo.FoodOrderingService.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

@@ -34,20 +34,4 @@ public class Order {
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "order")
     private List<OrderItem> orderItems;
-//    @JsonIgnore
-//    @ManyToOne
-//    @JoinColumn(name = "restaurant_id")
-//    private Restaurant restaurant;
-//
-
-//    private Date createdAt;
-
-//    @ManyToOne
-//    @JoinColumn(name= "address_id")
-//    private Address deliveryAddress;
-
-
-//    private int totalItem;
-//
-//    private Long totalPrice;
 }

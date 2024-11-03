@@ -2,14 +2,11 @@ package com.demo.FoodOrderingService.service.strategy;
 
 import com.demo.FoodOrderingService.dto.OrderItemDTO;
 import com.demo.FoodOrderingService.model.Restaurant;
-import com.demo.FoodOrderingService.model.RestaurantMenuItem;
 import com.demo.FoodOrderingService.service.RestaurantMenuItemService;
-import io.swagger.v3.oas.annotations.servers.Server;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
-import java.io.Console;
 import java.util.List;
 
 @Service
@@ -49,10 +46,6 @@ public class LowerCostStrategy implements RestaurantSelectionStrategy{
         double totalCost = 0;
         for (OrderItemDTO item : items) {
             totalCost +=restaurantMenuItemService.getPriceByNameAndId(restaurant.getId(),item.getItemName());
-//            int itemIndex = restaurant.getMenu().indexOf(item);
-//            if (itemIndex != -1) {
-//                totalCost += restaurant.getMenu().get(itemIndex).getPrice();
-//            }
         }
         System.out.println(totalCost);
         return totalCost;

@@ -13,7 +13,7 @@ public interface OrderService {
 
     public Order updateOrder(Long orderId, OrderStatus orderStatus) throws Exception;
 
-    public boolean canselOrder(Long orderId) throws Exception;
+    public boolean cancelOrder(Long orderId) throws Exception;
 
     public List<Order> getUserOrders(Long userId) throws Exception ;
 

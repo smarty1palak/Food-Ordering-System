@@ -16,11 +16,9 @@ import com.demo.FoodOrderingService.service.OrderService;
 import com.demo.FoodOrderingService.service.RestaurantMenuItemService;
 import com.demo.FoodOrderingService.service.RestaurantService;
 import com.demo.FoodOrderingService.service.strategy.RestaurantSelectionStrategy;
-import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.Console;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -128,10 +126,6 @@ public class OrderServiceImpl implements OrderService {
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
-//            order.setOrderStatus(OrderStatus.FULFILLED);
-//            orderRepository.save(order);
-            // Update the order status if all items have been processed
-            //checkAndUpdateOrderStatus(order);
             System.out.println("Capacity released for restaurant: " + restaurant.getId());
         }, delayInSeconds, TimeUnit.SECONDS);
     }
@@ -144,93 +138,6 @@ public class OrderServiceImpl implements OrderService {
         orderRepository.save(order); // Save the updated order status
     }
 
-//    private Order fulfillOrderFromEligibleRestaurants(List<Restaurant> restaurants, List<OrderItemDTO> items) {
-//        Order order = new Order();
-//        order.setOrderStatus(OrderStatus.PROCESSING);
-//
-//        List<OrderItem> orderItems = new ArrayList<>();
-//        for (Restaurant restaurant : restaurants) {
-//            if (restaurant.hasProcessingCapacity()) {
-//                for (OrderItemDTO itemRequest : items) {
-//                    RestaurantMenuItem menuItem =restaurantMenuService.getMenuItemByNameAndId(restaurant.getId(),itemRequest.getItemName());
-//
-//                    // Check if the restaurant can fulfill the item
-//                    if (menuItem != null && menuItem.getQuantity() >= itemRequest.getQuantity()) {
-//                        OrderItem orderItem = new OrderItem();
-//                        orderItem.setRestaurantMenuItem(menuItem);
-//                        orderItem.setQuantity(itemRequest.getQuantity());
-//                        orderItem.setTotalPrice(menuItem.getPrice());
-//
-//                        // Reduce the quantity in the menu item and add to the order
-//                        menuItem.reduceQuantity(itemRequest.getQuantity());
-//                        orderItems.add(orderItem);
-//                    }
-//                }
-//                // If we have items added to order from this restaurant, finalize it
-//                if (!orderItems.isEmpty()) {
-//                    order.setRestaurant(restaurant);
-//                    order.setOrderItems(orderItems);
-//                    orderRepository.save(order);
-//                    restaurant.reserveCapacity();
-//                    return order;
-//                }
-//            }
-//        }
-//        return null; // If no restaurant could fulfill any part of the order
-//    }
-
-//    private OrderDTO convertToDTO(Order order) {
-//        // Logic to convert Order to OrderDTO
-//        OrderDTO orderDTO = new OrderDTO();
-//        orderDTO.setId(order.getId());
-//        orderDTO.setStatus(order.getStatus());
-//
-//        List<OrderItemDTO> orderItemDTOs = new ArrayList<>();
-//        for (OrderItem item : order.getItems()) {
-//            OrderItemDTO itemDTO = new OrderItemDTO();
-//            itemDTO.setItemName(item.getRestaurantMenuItem().getItemName());
-//            itemDTO.setQuantity(item.getQuantity());
-//            itemDTO.setPrice(item.getPrice());
-//            orderItemDTOs.add(itemDTO);
-//        }
-//        orderDTO.setItems(orderItemDTOs);
-//        return orderDTO;
-//    }
-
-//    @Override
-//    public Order createOrder(OrderDTO orderDTO, User user) throws Exception {
-//
-//
-//        Restaurant restaurant = restaurantService.findById(orderDTO.getRestaurantId());
-//
-//        Order createdOrder = new Order();
-//        createdOrder.setCustomer(user);
-//        createdOrder.setOrderStatus(OrderStatus.PENDING);
-//        createdOrder.setRestaurant(restaurant);
-//        List<OrderItem> orderItems = new ArrayList<>();
-//
-//        for (OrderItemDTO userOrderItem : orderDTO.getItems()) {
-//
-//            OrderItem orderItem = new OrderItem();
-//            orderItem.setQuantity(userOrderItem.getQuantity());
-//            orderItem.setTotalPrice(userOrderItem.getPrice());
-//
-//            OrderItem saveOrderItem = orderItemRepository.save(orderItem);
-//            orderItems.add(saveOrderItem);
-//        }
-//
-//        Long totalPrice = cartService.calculateTotal(cart);
-//
-//        createdOrder.setOrderItems(orderItems);
-//        createdOrder.setTotalPrice(totalPrice);
-//
-//        Order savedOrder = orderRepository.save(createdOrder);
-//
-//        restaurant.getOrders().add(savedOrder);
-//
-//        return createdOrder;
-//    }
-
     @Override
     public Order updateOrder(Long orderId, OrderStatus orderStatus) throws Exception{
 
@@ -240,7 +147,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public boolean canselOrder(Long orderId) throws Exception {
+    public boolean cancelOrder(Long orderId) throws Exception {
 
         Order order = findOrderById(orderId);
 

@@ -59,31 +59,5 @@ public class Restaurant {
     public List<RestaurantMenuItem> getMenu(){
         return foods;
     }
-//
-//    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "restaurant")
-//    private List<Order> orders;
 
-//    @ManyToOne
-//    @JoinColumn(name = "owner_id", referencedColumnName = "id")
-//    private User owner;
-
-//    private String cuisineType;
-
-//    @OneToOne(cascade = CascadeType.ALL)
-//    @JoinColumn(name = "address_id", referencedColumnName = "id")
-//    private Address address;
-
-//    @Embedded
-//    private ContactInformation contactInformation;
-
-
-
-//    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "restaurant")
-//    private List<IngredientsItem> ingredientsItems;
-//
-//    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "restaurant")
-//    private List<IngredientCategory> ingredientCategories;
-//
-//    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "restaurant")
-//    private List<Category> categories;
 }

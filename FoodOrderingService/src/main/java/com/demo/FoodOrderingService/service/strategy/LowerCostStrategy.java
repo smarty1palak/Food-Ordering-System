@@ -3,15 +3,22 @@ package com.demo.FoodOrderingService.service.strategy;
 import com.demo.FoodOrderingService.dto.OrderItemDTO;
 import com.demo.FoodOrderingService.model.Restaurant;
 import com.demo.FoodOrderingService.model.RestaurantMenuItem;
+import com.demo.FoodOrderingService.service.RestaurantMenuItemService;
 import io.swagger.v3.oas.annotations.servers.Server;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
+import java.io.Console;
 import java.util.List;
 
 @Service
 @Primary
 public class LowerCostStrategy implements RestaurantSelectionStrategy{
+
+    @Autowired
+    RestaurantMenuItemService restaurantMenuItemService;
+
     @Override
     public Restaurant selectRestaurant(List<Restaurant> restaurants, List<OrderItemDTO> menuItems){
         Restaurant selectedRestaurant = null;
@@ -19,6 +26,7 @@ public class LowerCostStrategy implements RestaurantSelectionStrategy{
 
         for (Restaurant restaurant : restaurants) {
             if (canFulfillOrder(restaurant, menuItems)) {
+                System.out.println(restaurant.getName());
                 double totalCost = calculateTotalCost(restaurant, menuItems);
                 if (totalCost < lowestTotalCost) {
                     lowestTotalCost = totalCost;
@@ -40,11 +48,13 @@ public class LowerCostStrategy implements RestaurantSelectionStrategy{
     private double calculateTotalCost(Restaurant restaurant, List<OrderItemDTO> items) {
         double totalCost = 0;
         for (OrderItemDTO item : items) {
-            int itemIndex = restaurant.getMenu().indexOf(item);
-            if (itemIndex != -1) {
-                totalCost += restaurant.getMenu().get(itemIndex).getPrice();
-            }
+            totalCost +=restaurantMenuItemService.getPriceByNameAndId(restaurant.getId(),item.getItemName());
+//            int itemIndex = restaurant.getMenu().indexOf(item);
+//            if (itemIndex != -1) {
+//                totalCost += restaurant.getMenu().get(itemIndex).getPrice();
+//            }
         }
+        System.out.println(totalCost);
         return totalCost;
     }
 }

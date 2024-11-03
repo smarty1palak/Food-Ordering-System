@@ -54,7 +54,6 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     private RestaurantMenuItemRepository restaurantMenuItemRepository;
 
-
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(10);
 
     @Override
@@ -76,8 +75,7 @@ public class OrderServiceImpl implements OrderService {
         if (selectedRestaurant != null) {
             for(OrderItemDTO item : orderDTO.getItems()){
                 double itemPrice = restaurantMenuItemService.getPriceByNameAndId(selectedRestaurant.getId(), item.getItemName());
-                RestaurantMenuItem restaurantMenuItem1 = restaurantMenuItemService.getMenuItemByNameAndId(selectedRestaurant.getId(), item.getItemName());
-                totalCost += itemPrice;
+                totalCost += itemPrice*item.getQuantity();
                 totalQuantity += item.getQuantity();
             }
             selectedRestaurant.incrementProcessingLoad(totalQuantity);
@@ -86,12 +84,11 @@ public class OrderServiceImpl implements OrderService {
             throw new RuntimeException("No available restaurant can fulfill this order.");
         }
 
-        scheduleCapacityRelease(selectedRestaurant, totalQuantity, order, selectedRestaurant.getProcessingTimePerItem()*totalQuantity);
         order.setCustomer(user);
         order.setRestaurant(selectedRestaurant);
         order.setTotalAmount(totalCost);
         order.setOrderStatus(OrderStatus.PROCESSING);
-
+        scheduleCapacityRelease(selectedRestaurant, totalQuantity, order, selectedRestaurant.getProcessingTimePerItem()*totalQuantity);
         orderRepository.save(order);
 
         for(OrderItemDTO item : orderDTO.getItems()){
@@ -121,15 +118,28 @@ public class OrderServiceImpl implements OrderService {
 
     private void scheduleCapacityRelease(Restaurant restaurant, int quantity, Order order, long delayInSeconds) {
         scheduler.schedule(() -> {
+            System.out.println("Inside scheduler");
+            System.out.println(order.getId());
             restaurant.releaseCapacity(quantity);
             restaurantService.updateRestaurant(restaurant.getId(),restaurant); // Update restaurant capacity
 
+            try {
+                updateOrder(order.getId(), OrderStatus.FULFILLED);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+//            order.setOrderStatus(OrderStatus.FULFILLED);
+//            orderRepository.save(order);
             // Update the order status if all items have been processed
-            checkAndUpdateOrderStatus(order);
+            //checkAndUpdateOrderStatus(order);
+            System.out.println("Capacity released for restaurant: " + restaurant.getId());
         }, delayInSeconds, TimeUnit.SECONDS);
     }
 
     private synchronized void checkAndUpdateOrderStatus(Order order) {
+        System.out.println("Order is fulfilled");
+        System.out.println(order.getId());
+        System.out.println(order.getOrderStatus());
         order.setOrderStatus(OrderStatus.FULFILLED);
         orderRepository.save(order); // Save the updated order status
     }
@@ -222,17 +232,11 @@ public class OrderServiceImpl implements OrderService {
 //    }
 
     @Override
-    public Order updateOrder(Long orderId, String orderStatus) throws Exception {
+    public Order updateOrder(Long orderId, OrderStatus orderStatus) throws Exception{
 
         Order order = findOrderById(orderId);
-
-        if (orderStatus.equals("OUT_FOR_DELIVERY") || orderStatus.equals("DELIVERED") || orderStatus.equals("COMPLETED") || orderStatus.equals("PENDING")) {
-
-            order.setOrderStatus(OrderStatus.valueOf(orderStatus));
-            return orderRepository.save(order);
-        }
-
-        throw new BadRequestException("Please Select a Valid Order Status");
+        order.setOrderStatus(orderStatus);
+        return orderRepository.save(order);
     }
 
     @Override

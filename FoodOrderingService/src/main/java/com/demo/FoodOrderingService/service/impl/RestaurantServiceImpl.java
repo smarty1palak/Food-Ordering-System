@@ -70,7 +70,7 @@ public class RestaurantServiceImpl implements RestaurantService {
             existingRestaurant.setDescription(restaurant.getDescription());
         }
 
-        return restaurantRepository.save(existingRestaurant);
+        return restaurantRepository.save(restaurant);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.demo.FoodOrderingService.model;
 
 import com.demo.FoodOrderingService.enums.OrderStatus;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -19,6 +20,7 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "customer_id")
     private User customer;
@@ -28,10 +30,12 @@ public class Order {
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus = OrderStatus.PENDING;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "restaurant_id", nullable = false)
     private Restaurant restaurant;
 
+    @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "order")
     private List<OrderItem> orderItems;
 }

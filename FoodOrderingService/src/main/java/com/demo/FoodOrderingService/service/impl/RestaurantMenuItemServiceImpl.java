@@ -12,6 +12,7 @@ import com.demo.FoodOrderingService.service.RestaurantService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -72,6 +73,11 @@ public class RestaurantMenuItemServiceImpl implements RestaurantMenuItemService 
         }
 
         return restaurantMenuItem.get();
+    }
+
+    @Override
+    public List<RestaurantMenuItem> getAllRestaurantMenuItems() {
+        return restaurantMenuItemRepository.findAll();
     }
 
     @Override

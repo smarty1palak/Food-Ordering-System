@@ -19,6 +19,7 @@ public class Restaurant {
     private Long id;
     private String name;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "owner_id", referencedColumnName = "id")
     private User owner;
@@ -56,8 +57,8 @@ public class Restaurant {
         currLoad-=noOfItems;
     }
 
-    public List<RestaurantMenuItem> getMenu(){
-        return foods;
-    }
+//    public List<RestaurantMenuItem> getMenu(){
+//        return foods;
+//    }
 
 }

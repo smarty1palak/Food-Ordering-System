@@ -11,6 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("api/v1/menu-items")
 public class RestaurantMenuItemController {
@@ -23,6 +25,19 @@ public class RestaurantMenuItemController {
 
     @Autowired
     private RestaurantMenuItemRepository restaurantMenuItemRepository;
+
+    @GetMapping
+    public ResponseEntity<ResponseDTO<List<RestaurantMenuItem>>> getAllRestaurantMenuItems() {
+
+        ResponseDTO<List<RestaurantMenuItem>> response = new ResponseDTO<>();
+        List<RestaurantMenuItem> restaurantMenuItems = restaurantMenuItemService.getAllRestaurantMenuItems();
+        response.setPayload(restaurantMenuItems);
+        response.setMessage("Successful");
+        response.setHttpStatus(HttpStatus.OK);
+        response.setCode("200");
+
+        return new ResponseEntity<>(response, response.getHttpStatus());
+    }
 
     @GetMapping("/{id}")
     public ResponseEntity<ResponseDTO<RestaurantMenuItem>> findRestaurantMenuItemById(@PathVariable Long id) {

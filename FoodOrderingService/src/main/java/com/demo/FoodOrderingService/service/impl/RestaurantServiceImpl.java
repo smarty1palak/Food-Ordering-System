@@ -8,6 +8,7 @@ import com.demo.FoodOrderingService.repository.RestaurantMenuItemRepository;
 import com.demo.FoodOrderingService.repository.RestaurantRepository;
 import com.demo.FoodOrderingService.repository.UserRepository;
 import com.demo.FoodOrderingService.service.RestaurantService;
+import com.demo.FoodOrderingService.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -96,13 +97,7 @@ public class RestaurantServiceImpl implements RestaurantService {
         return restaurantRepository.findAll();
     }
 
-    @Override
-    public Restaurant updateStatus(Long id) {
 
-        Restaurant restaurant = findById(id);
-
-        return restaurantRepository.save(restaurant);
-    }
 
     @Override
     public Restaurant findById(Long id) {

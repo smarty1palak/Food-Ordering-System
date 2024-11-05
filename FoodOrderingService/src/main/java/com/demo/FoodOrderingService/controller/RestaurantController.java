@@ -67,6 +67,20 @@ public class RestaurantController {
         return new ResponseEntity<>(response, response.getHttpStatus());
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<ResponseDTO<Restaurant>> updateRestaurant(@RequestBody Restaurant res, @PathVariable Long id) {
+
+        ResponseDTO<Restaurant> response = new ResponseDTO<>();
+        Restaurant restaurant = restaurantService.updateRestaurant(id, res);
+
+        response.setPayload(restaurant);
+        response.setMessage("Restaurant Details Update Successfully");
+        response.setHttpStatus(HttpStatus.OK);
+        response.setCode("200");
+
+        return new ResponseEntity<>(response, response.getHttpStatus());
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<ResponseDTO<Boolean>> deleteRestaurantById(@RequestParam Long id) throws Exception {
 
@@ -80,29 +94,5 @@ public class RestaurantController {
 
         return new ResponseEntity<>(response, response.getHttpStatus());
     }
-//
-//    @PostMapping("/{id}/menu-items")
-//    public Restaurant addMenuItem(@PathVariable Long id, @RequestBody MenuItem menuItem) {
-//        Restaurant restaurant = restaurantRepository.findById(id).orElseThrow(() -> new RuntimeException("Restaurant not found"));
-//        menuItem.setRestaurant(restaurant);
-//        restaurant.getMenuItems().add(menuItem);
-//        return restaurantRepository.save(restaurant);
-//    }
 
-//    @PutMapping("/{id}/add-favorites")
-//    public ResponseEntity<ResponseDTO<RestaurantDTO>> addToFavorites(
-//            @PathVariable Long id,
-//            @RequestHeader("Authorization") String jwt
-//    ) throws Exception {
-//        ResponseDTO<RestaurantDTO> response = new ResponseDTO<>();
-//        User user = userService.userByToken(jwt);
-//        RestaurantDTO restaurant = restaurantService.addToFavorites(id, user);
-//
-//        response.setPayload(restaurant);
-//        response.setMessage("Successful");
-//        response.setHttpStatus(HttpStatus.OK);
-//        response.setCode("200");
-//
-//        return new ResponseEntity<>(response, response.getHttpStatus());
-//    }
 }

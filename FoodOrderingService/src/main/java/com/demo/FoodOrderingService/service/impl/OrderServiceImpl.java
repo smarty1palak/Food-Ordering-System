@@ -16,6 +16,7 @@ import com.demo.FoodOrderingService.service.OrderService;
 import com.demo.FoodOrderingService.service.RestaurantMenuItemService;
 import com.demo.FoodOrderingService.service.RestaurantService;
 import com.demo.FoodOrderingService.service.strategy.RestaurantSelectionStrategy;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -54,52 +55,54 @@ public class OrderServiceImpl implements OrderService {
 
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(10);
 
+    @Transactional
     @Override
     public Order createOrder(OrderDTO orderDTO, User user) throws Exception {
         Order order = new Order();
-        List<Restaurant> eligibleRestaurants = new ArrayList<>();
-        List<Restaurant> allRestaurants = restaurantService.getAllRestaurant();
+        synchronized (this) {
+            List<Restaurant> eligibleRestaurants = new ArrayList<>();
+            List<Restaurant> allRestaurants = restaurantService.getAllRestaurant();
 
-        for (Restaurant restaurant : allRestaurants) {
-            if (canFulfillOrder(restaurant, orderDTO.getItems())) {
-                eligibleRestaurants.add(restaurant);
+            for (Restaurant restaurant : allRestaurants) {
+                if (canFulfillOrder(restaurant, orderDTO.getItems())) {
+                    eligibleRestaurants.add(restaurant);
+                }
             }
-        }
 
-        Restaurant selectedRestaurant = selectionStrategy.selectRestaurant(eligibleRestaurants, orderDTO.getItems());
-        // Process the order based on selected restaurant
-        double totalCost = 0;
-        int totalQuantity = 0;
-        if (selectedRestaurant != null) {
-            for(OrderItemDTO item : orderDTO.getItems()){
+            Restaurant selectedRestaurant = selectionStrategy.selectRestaurant(eligibleRestaurants, orderDTO.getItems());
+            // Process the order based on selected restaurant
+            double totalCost = 0;
+            int totalQuantity = 0;
+            if (selectedRestaurant != null) {
+                for (OrderItemDTO item : orderDTO.getItems()) {
+                    double itemPrice = restaurantMenuItemService.getPriceByNameAndId(selectedRestaurant.getId(), item.getItemName());
+                    totalCost += itemPrice * item.getQuantity();
+                    totalQuantity += item.getQuantity();
+                }
+                selectedRestaurant.incrementProcessingLoad(totalQuantity);
+            } else {
+                throw new RuntimeException("No available restaurant can fulfill this order.");
+            }
+
+            order.setCustomer(user);
+            order.setRestaurant(selectedRestaurant);
+            order.setTotalAmount(totalCost);
+            order.setOrderStatus(OrderStatus.PROCESSING);
+            scheduleCapacityRelease(selectedRestaurant, totalQuantity, order, selectedRestaurant.getProcessingTimePerItem() * totalQuantity);
+            orderRepository.save(order);
+
+            for (OrderItemDTO item : orderDTO.getItems()) {
                 double itemPrice = restaurantMenuItemService.getPriceByNameAndId(selectedRestaurant.getId(), item.getItemName());
-                totalCost += itemPrice*item.getQuantity();
-                totalQuantity += item.getQuantity();
+                RestaurantMenuItem restaurantMenuItem1 = restaurantMenuItemService.getMenuItemByNameAndId(selectedRestaurant.getId(), item.getItemName());
+                restaurantMenuItem1.setQuantity(restaurantMenuItem1.getQuantity() - item.getQuantity());
+                restaurantMenuItemRepository.save(restaurantMenuItem1);
+                OrderItem orderItem1 = new OrderItem();
+                orderItem1.setTotalPrice(itemPrice * item.getQuantity());
+                orderItem1.setOrderQuantity(item.getQuantity());
+                orderItem1.setOrder(order);
+                orderItem1.setRestaurantMenuItem(restaurantMenuItem1);
+                orderItemRepository.save(orderItem1);
             }
-            selectedRestaurant.incrementProcessingLoad(totalQuantity);
-        }
-        else{
-            throw new RuntimeException("No available restaurant can fulfill this order.");
-        }
-
-        order.setCustomer(user);
-        order.setRestaurant(selectedRestaurant);
-        order.setTotalAmount(totalCost);
-        order.setOrderStatus(OrderStatus.PROCESSING);
-        scheduleCapacityRelease(selectedRestaurant, totalQuantity, order, selectedRestaurant.getProcessingTimePerItem()*totalQuantity);
-        orderRepository.save(order);
-
-        for(OrderItemDTO item : orderDTO.getItems()){
-            double itemPrice = restaurantMenuItemService.getPriceByNameAndId(selectedRestaurant.getId(), item.getItemName());
-            RestaurantMenuItem restaurantMenuItem1 = restaurantMenuItemService.getMenuItemByNameAndId(selectedRestaurant.getId(), item.getItemName());
-            restaurantMenuItem1.setQuantity(restaurantMenuItem1.getQuantity()-item.getQuantity());
-            restaurantMenuItemRepository.save(restaurantMenuItem1);
-            OrderItem orderItem1 = new OrderItem();
-            orderItem1.setTotalPrice(itemPrice*item.getQuantity());
-            orderItem1.setOrderQuantity(item.getQuantity());
-            orderItem1.setOrder(order);
-            orderItem1.setRestaurantMenuItem(restaurantMenuItem1);
-            orderItemRepository.save(orderItem1);
         }
         return order;
     }
@@ -116,15 +119,17 @@ public class OrderServiceImpl implements OrderService {
 
     private void scheduleCapacityRelease(Restaurant restaurant, int quantity, Order order, long delayInSeconds) {
         scheduler.schedule(() -> {
-            System.out.println("Inside scheduler");
-            System.out.println(order.getId());
-            restaurant.releaseCapacity(quantity);
-            restaurantService.updateRestaurant(restaurant.getId(),restaurant); // Update restaurant capacity
+            synchronized (restaurant) {
+                System.out.println("Inside scheduler");
+                System.out.println(order.getId());
+                restaurant.releaseCapacity(quantity);
+                restaurantService.updateRestaurant(restaurant.getId(), restaurant); // Update restaurant capacity
 
-            try {
-                updateOrder(order.getId(), OrderStatus.FULFILLED);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
+                try {
+                    updateOrder(order.getId(), OrderStatus.FULFILLED);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
             }
             System.out.println("Capacity released for restaurant: " + restaurant.getId());
         }, delayInSeconds, TimeUnit.SECONDS);

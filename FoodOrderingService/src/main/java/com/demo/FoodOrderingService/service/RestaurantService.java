@@ -16,8 +16,6 @@ public interface RestaurantService {
 
     public List<Restaurant> getAllRestaurant();
 
-    public Restaurant updateStatus(Long id);
-
     public Restaurant findById(Long id);
 
     public List<Restaurant> findRestaurantByOwnerId(Long id);
